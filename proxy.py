@@ -1,6 +1,6 @@
 import base64
 import copy
-import thread
+import _thread
 import socket
 import sys
 import os
@@ -42,12 +42,12 @@ while True:
     chunk = f.read()
     if not len(chunk):
         break
-    data += chunk
+    data += str(chunk)
 f.close()
 blocked = data.splitlines()
 
 f = open(USERNAME_PASSWORD_FILE, "rb")
-data = ""
+data = b""
 while True:
     chunk = f.read()
     if not len(chunk):
@@ -413,7 +413,7 @@ def start_proxy_server():
                 client_data.splitlines()[0]
                 ))
 
-            thread.start_new_thread(
+            _thread.start_new_thread(
                 handle_one_request_,
                 (
                     client_socket,

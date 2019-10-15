@@ -203,7 +203,7 @@ def parse_details(client_addr, client_data):
 
     # build up request for server
     first_line_tokens[1] = url[path_pos:]
-    lines[0] = ' '.join(first_line_tokens)
+    lines[0] = b' '.join(first_line_tokens)
     client_data = "\r\n".join(lines) + '\r\n\r\n'
 
     return {

@@ -23,14 +23,14 @@ admins = []
 
 # take command line argument
 if len(sys.argv) != 2:
-    print "Usage: python %s <PROXY_PORT>" % sys.argv[0]
-    print "Example: python %s 20000" % sys.argv[0]
+    print ("Usage: python %s <PROXY_PORT>" % sys.argv[0])
+    print ("Example: python %s 20000" % sys.argv[0])
     raise SystemExit
 
 try:
     proxy_port = int(sys.argv[1])
 except:
-    print "provide proper port number"
+    print ("provide proper port number")
     raise SystemExit
 
 if not os.path.isdir(CACHE_DIR):
@@ -77,7 +77,7 @@ def leave_access(fileurl):
         lock = locks[fileurl]
         lock.release()
     else:
-        print "Lock problem"
+        print ("Lock problem")
         sys.exit()
 
 
@@ -104,7 +104,7 @@ def do_cache_or_not(fileurl):
         else:
             return False
     except Exception as e:
-        print e
+        print (e)
         return False
 
 # check whether file is already cached or not
@@ -217,8 +217,7 @@ def parse_details(client_addr, client_data):
         }
 
     except Exception as e:
-        print e
-        print
+        print (e)
         return None
 
 
@@ -254,7 +253,7 @@ def serve_get(client_socket, client_addr, details):
 
         reply = server_socket.recv(BUFFER_SIZE)
         if last_mtime and "304 Not Modified" in reply:
-            print "returning cached file %s to %s" % (cache_path, str(client_addr))
+            print ("returning cached file %s to %s" % (cache_path, str(client_addr)))
             get_access(details["total_url"])
             f = open(cache_path, 'rb')
             chunk = f.read(BUFFER_SIZE)
@@ -266,7 +265,7 @@ def serve_get(client_socket, client_addr, details):
 
         else:
             if do_cache:
-                print "caching file while serving %s to %s" % (cache_path, str(client_addr))
+                print ("caching file while serving %s to %s" % (cache_path, str(client_addr)))
                 get_space_for_cache(details["total_url"])
                 get_access(details["total_url"])
                 f = open(cache_path, "w+")
@@ -280,7 +279,7 @@ def serve_get(client_socket, client_addr, details):
                 leave_access(details["total_url"])
                 client_socket.send("\r\n\r\n")
             else:
-                print "without caching serving %s to %s" % (cache_path, str(client_addr))
+                print ("without caching serving %s to %s" % (cache_path, str(client_addr)))
                 #print len(reply), reply
                 while len(reply):
                     client_socket.send(reply)
@@ -295,7 +294,7 @@ def serve_get(client_socket, client_addr, details):
     except Exception as e:
         server_socket.close()
         client_socket.close()
-        print e
+        print (e)
         return
 
 
@@ -319,7 +318,7 @@ def serve_post(client_socket, client_addr, details):
     except Exception as e:
         server_socket.close()
         client_socket.close()
-        print e
+        print (e)
         return
 
 
@@ -341,7 +340,7 @@ def handle_one_request_(client_socket, client_addr, client_data):
     details = parse_details(client_addr, client_data)
 
     if not details:
-        print "no any details"
+        print ("no any details")
         client_socket.close()
         return
 
@@ -354,7 +353,7 @@ def handle_one_request_(client_socket, client_addr, client_data):
     """
 
     if isb:
-        print "Block status : ", isb
+        print ("Block status : ", isb)
 
     if isb:
         client_socket.send("HTTP/1.0 200 OK\r\n")
@@ -373,8 +372,7 @@ def handle_one_request_(client_socket, client_addr, client_data):
         serve_post(client_socket, client_addr, details)
 
     client_socket.close()
-    print client_addr, "closed"
-    print
+    print (client_addr, "closed")
 
 
 
@@ -390,14 +388,14 @@ def start_proxy_server():
         proxy_socket.bind(('', proxy_port))
         proxy_socket.listen(max_connections)
 
-        print "Serving proxy on %s port %s ..." % (
+        print ("Serving proxy on %s port %s ..." % (
             str(proxy_socket.getsockname()[0]),
             str(proxy_socket.getsockname()[1])
-            )
+            ))
 
     except Exception as e:
-        print "Error in starting proxy server ..."
-        print e
+        print ("Error in starting proxy server ...")
+        print (e)
         proxy_socket.close()
         raise SystemExit
 
@@ -408,12 +406,12 @@ def start_proxy_server():
             client_socket, client_addr = proxy_socket.accept()
             client_data = client_socket.recv(BUFFER_SIZE)
 
-            print
-            print "%s - - [%s] \"%s\"" % (
+            print ("")
+            print ("%s - - [%s] \"%s\"" % (
                 str(client_addr),
                 str(datetime.datetime.now()),
                 client_data.splitlines()[0]
-                )
+                ))
 
             thread.start_new_thread(
                 handle_one_request_,
@@ -427,7 +425,7 @@ def start_proxy_server():
         except KeyboardInterrupt:
             client_socket.close()
             proxy_socket.close()
-            print "\nProxy server shutting down ..."
+            print ("\nProxy server shutting down ...")
             break
 
 

@@ -160,65 +160,65 @@ def get_space_for_cache(fileurl):
 
 # returns a dictionary of details
 def parse_details(client_addr, client_data):
-    try:
-        # parse first line like below
-        # http:://127.0.0.1:20020/1.data
+    # try:
+    # parse first line like below
+    # http:://127.0.0.1:20020/1.data
 
-        lines = client_data.splitlines()
-        while lines[len(lines)-1] == '':
-            lines.remove('')
-        first_line_tokens = lines[0].split()
-        url = first_line_tokens[1]
+    lines = client_data.splitlines()
+    while lines[len(lines)-1] == '':
+        lines.remove('')
+    first_line_tokens = lines[0].split()
+    url = first_line_tokens[1]
 
-        # get starting index of IP
-        url_pos = url.find("://")
-        if url_pos != -1:
-            protocol = url[:url_pos]
-            url = url[(url_pos+3):]
-        else:
-            protocol = "http"
+    # get starting index of IP
+    url_pos = url.find("://")
+    if url_pos != -1:
+        protocol = url[:url_pos]
+        url = url[(url_pos+3):]
+    else:
+        protocol = "http"
 
-        # get port if any
-        # get url path
-        port_pos = url.find(":")
-        path_pos = url.find("/")
-        if path_pos == -1:
-            path_pos = len(url)
+    # get port if any
+    # get url path
+    port_pos = url.find(":")
+    path_pos = url.find("/")
+    if path_pos == -1:
+        path_pos = len(url)
 
 
-        # change request path accordingly
-        if port_pos==-1 or path_pos < port_pos:
-            server_port = 80
-            server_url = url[:path_pos]
-        else:
-            server_port = int(url[(port_pos+1):path_pos])
-            server_url = url[:port_pos]
+    # change request path accordingly
+    if port_pos==-1 or path_pos < port_pos:
+        server_port = 80
+        server_url = url[:path_pos]
+    else:
+        server_port = int(url[(port_pos+1):path_pos])
+        server_url = url[:port_pos]
 
-        # check for auth
-        auth_line = [ line for line in lines if "Authorization" in line]
-        if len(auth_line):
-            auth_b64 = auth_line[0].split()[2]
-        else:
-            auth_b64 = None
+    # check for auth
+    auth_line = [ line for line in lines if "Authorization" in line]
+    if len(auth_line):
+        auth_b64 = auth_line[0].split()[2]
+    else:
+        auth_b64 = None
 
-        # build up request for server
-        first_line_tokens[1] = url[path_pos:]
-        lines[0] = ' '.join(first_line_tokens)
-        client_data = "\r\n".join(lines) + '\r\n\r\n'
+    # build up request for server
+    first_line_tokens[1] = url[path_pos:]
+    lines[0] = ' '.join(first_line_tokens)
+    client_data = "\r\n".join(lines) + '\r\n\r\n'
 
-        return {
-            "server_port" : server_port,
-            "server_url" : server_url,
-            "total_url" : url,
-            "client_data" : client_data,
-            "protocol" : protocol,
-            "method" : first_line_tokens[0],
-            "auth_b64" : auth_b64,
-        }
+    return {
+        "server_port" : server_port,
+        "server_url" : server_url,
+        "total_url" : url,
+        "client_data" : client_data,
+        "protocol" : protocol,
+        "method" : first_line_tokens[0],
+        "auth_b64" : auth_b64,
+    }
 
-    except Exception as e:
-        print (e)
-        return None
+    # except Exception as e:
+    #     print (e)
+    #     return None
 
 
 

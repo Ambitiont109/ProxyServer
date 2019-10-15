@@ -180,8 +180,8 @@ def parse_details(client_addr, client_data):
 
     # get port if any
     # get url path
-    port_pos = url.find(":")
-    path_pos = url.find("/")
+    port_pos = url.find(b":")
+    path_pos = url.find(b"/")
     if path_pos == -1:
         path_pos = len(url)
 

@@ -195,7 +195,7 @@ def parse_details(client_addr, client_data):
         server_url = url[:port_pos]
 
     # check for auth
-    auth_line = [ line for line in lines if "Authorization" in line]
+    auth_line = [ line for line in lines if b"Authorization" in line]
     if len(auth_line):
         auth_b64 = auth_line[0].split()[2]
     else:

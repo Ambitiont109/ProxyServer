@@ -171,7 +171,7 @@ def parse_details(client_addr, client_data):
     url = first_line_tokens[1]
 
     # get starting index of IP
-    url_pos = url.find("://")
+    url_pos = url.find(b"://")
     if url_pos != -1:
         protocol = url[:url_pos]
         url = url[(url_pos+3):]
